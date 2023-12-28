@@ -16,4 +16,8 @@ export class UsersService {
         return isSaved;
     }
 
+    async findUserByEmail(email: string) : Promise<any> {
+        return await this.userModel.findOne({email: email}).lean();
+    }
+
 }
