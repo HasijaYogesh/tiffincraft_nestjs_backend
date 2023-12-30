@@ -16,6 +16,8 @@ async function bootstrap() {
     .setDescription('This is a swagger document for the tiffincraft project')
     .setVersion('1.0')
     .addBearerAuth()
+    .addApiKey({ type: 'apiKey', name: 'key', in: 'header' }, 'key')
+    .addServer('http://localhost:444')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('tiffincraft-api-swagger', app, document);
