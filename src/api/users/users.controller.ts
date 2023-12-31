@@ -30,8 +30,7 @@ export class UsersController {
             password: "12345678"
         };
         this.logger.info("userObj ====>>> " + JSON.stringify(userObj));
-        return true;
-        // return await this.usersService.addUserInDb(userObj);
+        return await this.usersService.addUserInDb(userObj);
     }
 
     @ApiSecurity('key')
