@@ -18,6 +18,7 @@ async function bootstrap() {
     .addBearerAuth()
     .addApiKey({ type: 'apiKey', name: 'key', in: 'header' }, 'key')
     .addServer('http://localhost:444')
+    .addServer('https://tiffincraftnestjsbackend-production.up.railway.app/')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('tiffincraft-api-swagger', app, document);
