@@ -10,7 +10,7 @@ export class UsersService {
         @InjectModel(User.name) private userModel: Model<User> 
     ) {}
 
-    async addUserInDb(userObj) : Promise<any> {
+    async addUserInDb(userObj: any) : Promise<any> {
         let user = new this.userModel(userObj);
         let isSaved = await user.save();
         return isSaved;

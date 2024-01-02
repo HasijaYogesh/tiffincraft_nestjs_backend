@@ -29,11 +29,26 @@ export class User {
   @Prop({default: null})
   socialAccessToken: string;
 
-  @Prop({ type: Object })
+  @Prop({ type: Object, default: {
+    type: "Point",
+    coordinates: [0,0]
+  } })
   location: object;
 
   @Prop({default: null})
+  address: string;
+
+  @Prop({default: null})
+  profileImage: string;
+
+  @Prop({default: null})
   userType: string; // Values in constant file
+
+  @Prop({default: null})
+  createdAt: string;
+
+  @Prop({default: null})
+  updatedAt: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
