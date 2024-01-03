@@ -9,7 +9,7 @@ import { Logger } from 'winston';
 import { ApiKeyAuthGuard } from "src/auth/guard/apikey-auth.guard";
 import { JwtService } from "@nestjs/jwt";
 import { JwtGuard } from "src/auth/guard/jwt-auth.guard";
-import { UserRegisterDto } from "./dto/users.dto";
+import { ChangePasswordDto, UserLoginDto, UserRegisterDto } from "./dto/users.dto";
 import { Response } from "express";
 import { MESSAGES } from "src/utils/message";
 import * as bcrypt from "bcrypt";
@@ -84,8 +84,8 @@ export class UsersController {
                 return res.status(200).send({
                     status: 1,
                     message: MESSAGES.userRegisteredSuccess,
-                    token: token,
-                    data: userData
+                    data: userData,
+                    token: token
                 });
 
             }
@@ -105,27 +105,166 @@ export class UsersController {
         }
     }
 
+    /**
+     * @Method : used to login user
+     * @Author : Yogesh Hasija
+     * @Date : 3rd January 2024
+     */
+    @ApiTags("Users")
+    @ApiOperation({ description: "used to login user" })
     @ApiSecurity('key')
-    @Get('key')
-    @ApiOperation({ description: "Test api key" })
     @UseGuards(ApiKeyAuthGuard)
-    async createUser() : Promise<any> {
-        let userObj = {
-            firstName: "test",
-            lastName: "mailinator",
-            email: "test@mailiantor.com",
-            password: "12345678"
-        };
+    @Post("/userLogin")
+    async userLogin(@Body() reqData: UserLoginDto, @Req() req: Request, @Res() res: Response) : Promise<any> {
+        const {
+            email, password, userType
+        } = reqData;
+        try {
 
-        return {token : await this.jwtService.signAsync(userObj)};
+            const userData = await this.userModel.findOne({email: email, userType: userType}).lean();
+
+            if(!userData) {
+                return res.status(200).send({
+                    status: 0,
+                    message: MESSAGES.noUserFound
+                });
+            }
+
+            if(userData && bcrypt.compareSync(password, userData['password'])) {
+                this.logger.info("User Login successfully ===>>> " + JSON.stringify(userData));
+
+                let payload = { id: userData['_id'], email: userData['email'], userType: userData['userType'], firstName: userData['firstName'], lastName: userData['lastName'] };
+
+                const token = await this.jwtService.signAsync(payload);
+
+                let user = new UserResponse(userData);
+
+                return res.status(200).send({
+                    status: 1,
+                    message: MESSAGES.userLoginSuccess,
+                    data: user,
+                    token: token
+                });
+            }
+            else {
+                return res.status(200).send({
+                    status: 0,
+                    message: MESSAGES.invalidCredentials
+                });
+            }
+        }
+        catch(error) {
+            this.logger.info("Error in user login api ===>>> " + error);
+            return res.status(200).send({
+                status: 0,
+                message: error.message
+            });
+        }
     }
 
+    /**
+     * @Method : used to get the login user profile
+     * @Author : Yogesh Hasija
+     * @Date : 3rd January 2024
+     */
+    @ApiTags("Users")
     @ApiBearerAuth()
-    @Get('profile')
-    @ApiOperation({ description: "Test auth token" })
+    @Get('/userProfile')
+    @ApiOperation({ description: "Used to get the login user profile" })
     @UseGuards(JwtGuard)
-    async profile(@Req() req: Request) : Promise<any> {
-        return req['user'];
+    async userProfile(@Req() req: Request, @Res() res: Response) : Promise<any> {
+        try {
+            const userId = req['user'].id;
+
+            const userData = await this.userModel.findOne({_id: userId}).lean();
+
+            if(!userData) {
+                return res.status(200).send({
+                    status: 0,
+                    message: MESSAGES.noUserFound
+                });
+            }
+
+            let user = new UserResponse(userData);
+
+            return res.status(200).send({
+                status: 1,
+                message: MESSAGES.userDetails,
+                data: user
+            });
+        }
+        catch(error) {
+            this.logger.info("Error in user profile api ===>>> " + error);
+            return res.status(200).send({
+                status: 0,
+                message: error.message
+            });
+        }
     }
 
+
+    /**
+     * @Method : used to change password for user
+     * @Author : Yogesh Hasija
+     * @Date : 3rd January 2024
+     */
+    @ApiTags("Users")
+    @ApiBearerAuth()
+    @Post('/changePassword')
+    @ApiOperation({ description: "Used to change password for user" })
+    @UseGuards(JwtGuard)
+    async changePassword(@Body() reqData: ChangePasswordDto,@Req() req: Request, @Res() res: Response) : Promise<any> {
+        const { oldPassword, newPassword } = reqData;
+        try {
+            const userId = req['user'].id;
+
+
+            const userData = await this.userModel.findOne({_id: userId}).lean();
+
+            if(!userData) {
+                return res.status(200).send({
+                    status: 0,
+                    message: MESSAGES.noUserFound
+                });
+            }
+
+            if(userData && bcrypt.compareSync(oldPassword, userData['password'])) {
+
+                let password = bcrypt.hashSync(newPassword, 10);
+
+                let updatedUser = await this.userModel.findByIdAndUpdate(
+                    {
+                        _id: userId
+                    },
+                    {
+                        password: password
+                    },
+                    {
+                        new: true
+                    }
+                );
+
+                this.logger.info("Update the user with user password ====>>>>" + JSON.stringify(updatedUser));
+
+                return res.status(200).send({
+                    status: 1,
+                    message: MESSAGES.passwordUpdated
+                });
+
+            }
+            else {
+                return res.status(200).send({
+                    status: 1,
+                    message: MESSAGES.invalidOldPassword
+                });
+            }
+        }
+        catch(error) {
+            this.logger.info("Error in user profile api ===>>> " + error);
+            return res.status(200).send({
+                status: 0,
+                message: error.message
+            });
+        }
+    }
 };

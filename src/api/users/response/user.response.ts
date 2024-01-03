@@ -21,7 +21,6 @@ export class UserResponse
     this.lastName = instance.lastName ? instance.lastName : "",
     this.countryCode = instance.countryCode ? instance.countryCode : "",
     this.phone = instance.phone ? instance.phone : "",
-    this.password = instance.password ? instance.password : "",
     this.location = instance.location ? instance.location : {},
     this.address = instance.address ? instance.address : "",
     this.profileImage = instance.profileImage ? instance.profileImage : "",
