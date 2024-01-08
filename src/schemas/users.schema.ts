@@ -5,28 +5,28 @@ export type UserDocument = HydratedDocument<User>;
 
 @Schema()
 export class User {
-  @Prop({default: null})
+  @Prop({type: String, default: null})
   firstName: string;
 
-  @Prop({default: null})
+  @Prop({type: String, default: null})
   lastName: string;
 
-  @Prop({default: null})
+  @Prop({type: String, default: null})
   email: string;
 
-  @Prop({default: null})
+  @Prop({type: String, default: null})
   countryCode: string;
 
-  @Prop({default: null})
+  @Prop({type: String, default: null})
   phone: string;
 
-  @Prop({default: null})
+  @Prop({type: String, default: null})
   password: string;
 
-  @Prop({default: null})
+  @Prop({type: String, default: null})
   socialId: string;
 
-  @Prop({default: null})
+  @Prop({type: String, default: null})
   socialAccessToken: string;
 
   @Prop({ type: Object, default: {
@@ -35,20 +35,20 @@ export class User {
   } })
   location: object;
 
-  @Prop({default: null})
+  @Prop({type: String, default: null})
   address: string;
 
-  @Prop({default: null})
+  @Prop({type: String, default: null})
   profileImage: string;
 
-  @Prop({default: null})
+  @Prop({type: String, default: null})
   userType: string; // Values in constant file
 
-  @Prop({default: null})
-  createdAt: string;
+  @Prop({type: Date, default: null})
+  createdAt: Date;
 
-  @Prop({default: null})
-  updatedAt: string;
+  @Prop({type: Date, default: null})
+  updatedAt: Date;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

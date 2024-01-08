@@ -17,6 +17,7 @@ export class UserResponse
   constructor(instance: any)
   {
     this.id = instance._id ? instance._id : "",
+    this.email = instance.email ? instance.email : "",
     this.firstName = instance.firstName ? instance.firstName : "",
     this.lastName = instance.lastName ? instance.lastName : "",
     this.countryCode = instance.countryCode ? instance.countryCode : "",

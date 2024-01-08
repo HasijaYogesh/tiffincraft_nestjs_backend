@@ -112,3 +112,48 @@ export class ChangePasswordDto
   @IsString() @IsNotEmpty()
   readonly newPassword: string;
 }
+
+
+export class ForgotPasswordDto
+{
+  @ApiProperty({
+    type: String,
+    default: "email"
+  })
+  @IsString() @IsNotEmpty()
+  readonly email: string;
+}
+
+export class VerifyOtpDto
+{
+  @ApiProperty({
+    type: String,
+    default: "email"
+  })
+  @IsString() @IsNotEmpty()
+  readonly email: string;
+
+  @ApiProperty({
+    type: String,
+    default: "otp"
+  })
+  @IsString() @IsNotEmpty()
+  readonly otp: string;
+}
+
+export class ChangePasswordWithOtpDto
+{
+  @ApiProperty({
+    type: String,
+    default: "email"
+  })
+  @IsString() @IsNotEmpty()
+  readonly email: string;
+
+  @ApiProperty({
+    type: String,
+    default: "password"
+  })
+  @IsString() @IsNotEmpty()
+  readonly password: string;
+}
