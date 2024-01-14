@@ -13,6 +13,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthModule } from './auth/auth.module';
+import { FileUploadModule } from './api/fileUpload/fileUpload.module';
 
 if (!fs.existsSync(logDir))
 {
@@ -114,7 +115,8 @@ const logger = winston.createLogger({
       signOptions: { expiresIn: process.env.JWT_EXPIRES },
     }),
     UsersModule,
-    AuthModule
+    AuthModule,
+    FileUploadModule
   ],
   controllers: [AppController],
   providers: [AppService],

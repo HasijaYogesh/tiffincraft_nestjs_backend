@@ -15,5 +15,11 @@ export const MESSAGES = {
     otpExpired: "The otp is expired!",
     validOtpSuccess: "The otp is validated successfully",
     resetPasswordSuccess: "Reset password successful",
-    unableToResetPassword: "Unable to reset the password!"
+    unableToResetPassword: "Unable to reset the password!",
+    fileUploadedSuccess: "File uploaded successfully",
+    failedToUploadFile: "Failed to upload the file",
+    noFileSelected: "No file selected!",
+    folderNameRequired: "Folder name is required!",
+    filesDeletedSuccessfully: "Files deleted succesfully",
+    filesDownloadedSuccessfully: "File downloaded on server successfully",
 }
